@@ -90,6 +90,7 @@ try:
     # Print retrieved data from the files
     print('Sample rate: ', sample_rate, ' Hz')
     print('Channel names: ', ch_names)
+    np.save('./samples.npy', samples)
     print('Shape samples: ', np.shape(samples))
 
 except:
