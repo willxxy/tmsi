@@ -72,14 +72,6 @@ class LSLConsumer:
 
     def __init__(self, lsl_outlet, connection):
         self._outlet = lsl_outlet
-        # self.SERVER_IP = '192.168.123.162'
-        # self.PORT = 12345
-        # self.server = (self.SERVER_IP, self.PORT)
-        # self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # self.sock.bind(self.server)
-        # self.sock.listen(1)
-        # print(f"Listening on {self.SERVER_IP}:{self.PORT}")
-        # self.conn, self.addr = self.sock.accept()
         self.connection = connection
         self.labels = {
             0 : 'backward',
@@ -101,20 +93,12 @@ class LSLConsumer:
                                 (i+1)*sd.num_samples_per_sample_set] \
                                     for i in range(sd.num_sample_sets)]
             signal_arr = extract_elements(signals)
-            # print(signal_arr.shape)
             inference_model = load('./svm_False_False_False.joblib')
             y_pred = inference_model.predict(signal_arr)
             overall_label = stats.mode(y_pred)[0][0]
             command = self.labels[overall_label]
             self.connection.sendall(command.encode('utf-8'))
             # time.sleep(0.1)
-
-            # print(len(signals))
-            # serialized = pickle.dumps(signals[0])
-            # self.sock.sendto(serialized, (self.SERVER_IP, self.PORT))
-            # time.sleep(0.1)
-
-            # and push to LSL
             self._outlet.push_chunk(signals, local_clock())
         except:
             raise TMSiError(TMSiErrorCode.file_writer_error)
